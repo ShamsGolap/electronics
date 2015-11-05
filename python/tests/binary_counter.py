@@ -3,7 +3,7 @@
 import RPi.GPIO as GPIO
 import time
 
-REVERSE = True
+REVERSE = False
 pins = [11, 12, 13, 15, 16, 18, 22, 7]
 
 if REVERSE:
@@ -16,21 +16,15 @@ def setup():
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, GPIO.HIGH)
 
-    for i in range(3):
-        for pin in pins:
-            time.sleep(0.05)
-            GPIO.output(pin, GPIO.LOW)
-
-        for pin in pins:
-            time.sleep(0.05)
-            GPIO.output(pin, GPIO.HIGH)        
-
 def loop():
     value = copy_value = 0
-    bits = [1, 2, 4, 8, 16, 32, 64, 128][::-1]
+
     binary = [1, 1, 1, 1, 1, 1, 1, 1]
+    bits = [128, 64, 32, 16, 8, 4, 2, 1]
 
     while True:
+        print(value)
+
         while copy_value > 0:
             for key, bit in enumerate(bits):
                 if copy_value - bit < 0:
@@ -42,7 +36,7 @@ def loop():
         for index, pin in enumerate(pins):
             GPIO.output(pin, binary[index])
 
-        time.sleep(1)
+        time.sleep(0.1)
 
         value += 1
         copy_value = value
